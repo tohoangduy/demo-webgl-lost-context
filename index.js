@@ -53,15 +53,15 @@
         isInterrupted: false,
     };
 
-    window.onMobileAppEvent = message => {
+    window.onMobileAppEvent = (event, message) => {
         // alert('Message received from Application:' + message);
-        if (message === 'pause') {
+        if (event === 'pause') {
             console.log('isContextLost', state.gl.isContextLost());
             // if (!state.gl.isContextLost() && state.gl.WEBGL_lose_context_ext) {
             //     state.gl.WEBGL_lose_context_ext.loseContext();
             // }
             state.isInterrupted = true;
-        } else if (message === 'resume') {
+        } else if (event === 'resume') {
             // if (state.gl.isContextLost() && state.gl.WEBGL_lose_context_ext) {
             //     state.gl.WEBGL_lose_context_ext.restoreContext();
                 alert('Webview show message received from Application:' + message);
