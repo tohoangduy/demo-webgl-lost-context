@@ -49,21 +49,24 @@
         req: null,
         eyeInArray: function () {
             return [this.app.eye.x, this.app.eye.y, this.app.eye.z, this.app.eye.w];
-        }
+        },
+        isInterrupted: false,
     };
 
     window.onMobileAppEvent = message => {
         // alert('Message received from Application:' + message);
         if (message === 'pause') {
             console.log('isContextLost', state.gl.isContextLost());
-            if (!state.gl.isContextLost() && state.gl.WEBGL_lose_context_ext) {
-                state.gl.WEBGL_lose_context_ext.loseContext();
-            }
+            // if (!state.gl.isContextLost() && state.gl.WEBGL_lose_context_ext) {
+            //     state.gl.WEBGL_lose_context_ext.loseContext();
+            // }
+            state.isInterrupted = true;
         } else if (message === 'resume') {
-            if (state.gl.isContextLost() && state.gl.WEBGL_lose_context_ext) {
-                state.gl.WEBGL_lose_context_ext.restoreContext();
-                alert('Webview show message received from Application:' + message);
-            }
+            // if (state.gl.isContextLost() && state.gl.WEBGL_lose_context_ext) {
+            //     state.gl.WEBGL_lose_context_ext.restoreContext();
+            //     alert('Webview show message received from Application:' + message);
+            // }
+            state.isInterrupted = false;
         }
     };
 
@@ -475,6 +478,8 @@
 
         state.gl.clearColor(0.2, 0.2, 0.4, 1.0); // Set clear color (the color is slightly changed)
         state.gl.clear(state.gl.COLOR_BUFFER_BIT | state.gl.DEPTH_BUFFER_BIT);
+
+        if (state.isInterrupted) return;
 
         mat4.perspective(state.pm,
             20, OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT, 1, 100
