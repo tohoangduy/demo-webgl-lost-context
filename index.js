@@ -64,7 +64,7 @@
         } else if (message === 'resume') {
             // if (state.gl.isContextLost() && state.gl.WEBGL_lose_context_ext) {
             //     state.gl.WEBGL_lose_context_ext.restoreContext();
-            //     alert('Webview show message received from Application:' + message);
+                alert('Webview show message received from Application:' + message);
             // }
             state.isInterrupted = false;
         }
