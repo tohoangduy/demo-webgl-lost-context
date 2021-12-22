@@ -54,7 +54,7 @@
     };
 
     window.onMobileAppEvent = (event, message) => {
-        // alert('Message received from Application:' + message);
+        // alert(`Event: ${event}, Message: ${message}`);
         if (event === 'pause') {
             console.log('isContextLost', state.gl.isContextLost());
             // if (!state.gl.isContextLost() && state.gl.WEBGL_lose_context_ext) {
@@ -64,7 +64,7 @@
         } else if (event === 'resume') {
             // if (state.gl.isContextLost() && state.gl.WEBGL_lose_context_ext) {
             //     state.gl.WEBGL_lose_context_ext.restoreContext();
-                alert('Webview show message received from Application:' + message);
+                // alert('Webview show message received from Application:' + message);
             // }
             state.isInterrupted = false;
         }
@@ -429,6 +429,9 @@
         var msg = "Eye position: (" + state.app.eye.x.toFixed(2) + "," + state.app.eye.y.toFixed(2) + "," + state.app.eye.z.toFixed(2) + ")";
         state.ctx.clearRect(0, 0, state.ctx.canvas.width, state.ctx.canvas.height);
         state.ctx.save();
+
+        if (state.isInterrupted) return;
+
         state.ctx.font = "20px Helvetica";
         state.ctx.fillStyle = "white";
         state.ctx.fillText(msg, 10, 25);
@@ -473,6 +476,12 @@
     }
 
     function draw() {
+        if (state.isInterrupted) {
+            state.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+            state.gl.clear(state.gl.COLOR_BUFFER_BIT | state.gl.DEPTH_BUFFER_BIT); // Clear the color buffer
+            return;
+        }
+
         state.gl.bindFramebuffer(state.gl.FRAMEBUFFER, state.fbo); // Change the drawing destination to FBO
         state.gl.viewport(0, 0, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT); // Set a viewport for FBO
 
@@ -554,12 +563,18 @@
         state.ui.pressedKeys[event.keyCode] = false;
         // Simulate Context lost and restore here.
         if (String.fromCharCode(event.keyCode) == "L") {
-            console.log('isContextLost', state.gl.isContextLost());
-            if (!state.gl.isContextLost() && state.gl.WEBGL_lose_context_ext) {
-                state.gl.WEBGL_lose_context_ext.loseContext();
-            } else if (state.gl.isContextLost() && state.gl.WEBGL_lose_context_ext) {
-                state.gl.WEBGL_lose_context_ext.restoreContext();
+            if (state.isInterrupted) {
+                onMobileAppEvent('resume');
+            } else {
+                onMobileAppEvent('pause');
+                draw();
             }
+            // console.log('isContextLost', state.gl.isContextLost());
+            // if (!state.gl.isContextLost() && state.gl.WEBGL_lose_context_ext) {
+            //     state.gl.WEBGL_lose_context_ext.loseContext();
+            // } else if (state.gl.isContextLost() && state.gl.WEBGL_lose_context_ext) {
+            //     state.gl.WEBGL_lose_context_ext.restoreContext();
+            // }
         }
     }
 
