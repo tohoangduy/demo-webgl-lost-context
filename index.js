@@ -307,8 +307,8 @@
         state.canvas.addEventListener('touchstart', touchstart, false);
         state.canvas.addEventListener('touchend', touchend, false);
         state.canvas.addEventListener('touchmove', touchmove, false);
-        state.canvas.addEventListener('webglcontextlost', webglcontextlost, false);
-        state.canvas.addEventListener('webglcontextrestored', webglcontextrestored, false);
+        // state.canvas.addEventListener('webglcontextlost', webglcontextlost, false);
+        // state.canvas.addEventListener('webglcontextrestored', webglcontextrestored, false);
     }
 
     function webglcontextlost(e) {
@@ -479,8 +479,6 @@
         state.gl.clearColor(0.2, 0.2, 0.4, 1.0); // Set clear color (the color is slightly changed)
         state.gl.clear(state.gl.COLOR_BUFFER_BIT | state.gl.DEPTH_BUFFER_BIT);
 
-        if (state.isInterrupted) return;
-
         mat4.perspective(state.pm,
             20, OFFSCREEN_WIDTH / OFFSCREEN_HEIGHT, 1, 100
         );
@@ -616,6 +614,7 @@
     }
 
     function touchstart(event) {
+        if (state.isInterrupted) return;
         const touch = event.touches[0];
         const mouseEvent = new MouseEvent('mousedown', {
             clientX: touch.clientX,
@@ -625,6 +624,7 @@
     }
 
     function touchend(event) {
+        if (state.isInterrupted) return;
         const touch = event.touches[0];
         const mouseEvent = new MouseEvent('mouseup', {
             clientX: touch.clientX,
@@ -633,6 +633,7 @@
         state.canvas.dispatchEvent(mouseEvent);    }
 
     function touchmove(event) {
+        if (state.isInterrupted) return;
         event.preventDefault();
         const touch = event.touches[0];
         const mouseEvent = new MouseEvent('mousemove', {
