@@ -53,8 +53,7 @@
         isInterrupted: false,
     };
 
-    window.onMobileAppEvent = (event, message) => {
-        // alert(`Event: ${event}, Message: ${message}`);
+    window.onMobileAppEvent = event => {
         if (event === 'pause') {
             console.log('isContextLost', state.gl.isContextLost());
             // if (!state.gl.isContextLost() && state.gl.WEBGL_lose_context_ext) {
@@ -64,7 +63,6 @@
         } else if (event === 'resume') {
             // if (state.gl.isContextLost() && state.gl.WEBGL_lose_context_ext) {
             //     state.gl.WEBGL_lose_context_ext.restoreContext();
-                // alert('Webview show message received from Application:' + message);
             // }
             state.isInterrupted = false;
         }
